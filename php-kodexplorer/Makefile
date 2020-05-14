@@ -1,0 +1,43 @@
+include $(TOPDIR)/rules.mk
+
+PKG_NAME:=luci-app-php-kodexplorer
+PKG_VERSION:=2.0
+PKG_RELEASE:=20200331
+
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=https://github.com/kalcaddle/KodExplorer.git
+PKG_SOURCE_VERSION:=latest
+PKG_MAINTAINER:=GaryPang <https://github.com/garypang13/luci-app-php-kodexplorer> Lienol <lawlienol@gmail.com>
+
+include $(INCLUDE_DIR)/package.mk
+
+define Package/luci-app-php-kodexplorer
+	SECTION:=luci
+	CATEGORY:=LuCI
+	SUBMENU:=Network
+	TITLE:=PHP and KodExplorer
+	PKGARCH:=all
+	DEPENDS:=+luci-ssl-nginx +php7 +php7-fpm +php7-mod-curl +php7-mod-gd +php7-mod-iconv +php7-mod-json +php7-mod-mbstring +php7-mod-opcache +php7-mod-session +php7-mod-zip +php7-mod-sqlite3 +php7-mod-openssl
+endef
+
+define Package/luci-app-php-kodexplorer/extra_provides
+    echo 'libstdc++.so.6'; \
+    echo 'libpthread.so.0'; \
+    echo 'libm.so.6'; \
+    echo 'libc.so.6';
+endef
+
+define Build/Compile
+endef
+
+define Package/luci-app-php-kodexplorer/install	
+	$(INSTALL_DIR) $(1)/www/kod
+	$(CP) \
+		$(PKG_BUILD_DIR)/{app,config,data,plugins,static} \
+		$(PKG_BUILD_DIR)/index.php \
+		$(PKG_BUILD_DIR)/ChangeLog.md \
+		$(1)/www/kod
+endef
+
+$(eval $(call BuildPackage,luci-app-php-kodexplorer))

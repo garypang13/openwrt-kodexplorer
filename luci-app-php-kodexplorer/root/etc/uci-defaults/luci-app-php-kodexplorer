@@ -1,0 +1,14 @@
+#!/bin/sh
+
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@phpkod[-1]
+	add ucitrack phpkod
+	set ucitrack.@phpkod[-1].init=phpkod
+	commit ucitrack
+EOF
+
+/etc/init.d/php7-fpm disable && /etc/init.d/php7-fpm stop
+sed -i 's/service_start $PROG/service_start $PROG -R/g' /etc/init.d/php7-fpm
+sed -i "s/user =.*/user = root/g" /etc/php7-fpm.d/www.conf
+rm -f /tmp/luci-indexcache
+exit 0
